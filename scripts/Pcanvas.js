@@ -182,10 +182,10 @@ const propiedades = {
     jugador: {
         velocidad__actual_y : 5
     },
-    objectos: {
+    objetos: {
         velocidad_inicio :2,
         velocidad_actual: 2,
-        velocidad_maxima:9
+        velocidad_maxima:10
     }
     
 }
@@ -242,14 +242,14 @@ window.addEventListener('keyup', (event) =>{
 
 async function moreObstaculos(){
       
-        if (obstaculos.length <=4 && fechanow < Date.now()) {
-            fechanow = Date.now()+750
+        if (obstaculos.length <=8 && fechanow < Date.now()) {
+            fechanow = Date.now()+750-(propiedades.objetos.velocidad_actual*20)
             let numRandom = Math.random();
-           if (numRandom > 0.5 - (propiedades.objectos.velocidad_actual*0.025)) {
+           if (numRandom > 0.5 - (propiedades.objetos.velocidad_actual*0.025)) {
             
              obstaculos.push(new Obstaculo({
                 position:   {
-                x: 400+Math.random()*750,
+                x: 400+(Math.random()*200+10) -(propiedades.objetos.velocidad_actual*5) ,
                 y: 250
                 },
                 velocidad: {
@@ -279,17 +279,17 @@ function animate(){
     suelo.update();
     obstaculos.forEach((obstaculo) => {
         obstaculo.update();
-        obstaculo.velocidad.x = propiedades.objectos.velocidad_actual
+        obstaculo.velocidad.x = propiedades.objetos.velocidad_actual
     });
     moreObstaculos()
     //console.log("Aullando como lobaa aaaaaauuuuuuuuuuuu uuuuuuuuuu soy quien no se enamoraaaaaaaaaaaaaaa aaaaaaaaaaaauuuuuuuuu uuuuuuuuuuu uuuuuuuuuuuuuuuuuu");
     jugador.velocidad.x = 0
     jugador.velocidad.y = propiedades.jugador.velocidad__actual_y
-    suelo.velocidad.x  = propiedades.objectos.velocidad_actual;
+    suelo.velocidad.x  = propiedades.objetos.velocidad_actual;
     
-    if (propiedades.objectos.velocidad_actual < propiedades.objectos.velocidad_maxima) {
-        propiedades.objectos.velocidad_actual*= 1.001
-        console.log(propiedades.objectos.velocidad_actual)
+    if (propiedades.objetos.velocidad_actual < propiedades.objetos.velocidad_maxima) {
+        propiedades.objetos.velocidad_actual*= 1.001
+        console.log(propiedades.objetos.velocidad_actual)
     }
     //console.log(jugador.velocidad.y)
     //console.log(booleanos.salto.permitido)
