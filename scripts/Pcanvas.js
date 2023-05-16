@@ -15,7 +15,10 @@ class Jugador {
         
     }
     draw() {
-        c.fillStyle = 'black'
+        c.fillStyle = "black"
+        c.shadowBlur = 2;
+        c.shadowColor = "black";
+        c.globalAlpha = 1;
         c.fillRect(this.position.x, this.position.y, this.tamano.x, this.tamano.y);
     }
 
@@ -36,6 +39,13 @@ class Jugador {
         }
     }
 
+    this.position.x +=10*this.velocidad.x
+    this.position.x -= this.velocidad.x
+    if (this.position.x >200) {
+        this.position.x = 200
+    } else if (this.position.x < 25) {
+        this.position.x = 25
+    }
     this.draw()
     
     }
@@ -51,7 +61,10 @@ class Obstaculo {
         
     }
     draw() {
-        c.fillStyle = 'black'
+        c.fillStyle = "gray";
+        c.shadowBlur = 2;
+        c.shadowColor = "black";  
+        c.globalAlpha = 0.2;
         c.fillRect(this.position.x, this.position.y - this.tamano.y+50, this.tamano.x, this.tamano.y);
     }
 
@@ -70,8 +83,13 @@ class Suelo {
         this.velocidad = velocidad
     }
     draw() {
-        c.beginPath();
+
         c.fillStyle = 'black'
+        c.shadowBlur = 0;
+        c.shadowColor = "black";
+        
+        c.globalAlpha = 1;
+        c.beginPath();
         c.moveTo(0,300);
         c.lineTo(400, 300);
 
@@ -79,6 +97,7 @@ class Suelo {
             if (this.position.x+(100*i) < -400) {
                 this.position.x+=400;
             }
+            
             c.moveTo(this.position.x+(100*i),this.position.y);
             c.lineTo(this.position.x+100+(100*i),this.position.y+100);
             
@@ -89,14 +108,16 @@ class Suelo {
 
     update(){
     this.draw()
-    this.position.x -= this.velocidad.x
+    this.position.x -=2 * (this.velocidad.x/2)
+    
+    
     
     }
 } 
 //////////////////////////////
 const jugador = new Jugador({
     position:   {
-    x: 50,
+    x: 100,
     y: 250
     },
     velocidad: {
@@ -120,7 +141,7 @@ const obstaculos = [new Obstaculo({
     },
     tamano:   {
         x: 30,
-        y: 70
+        y: 50
     }
 })]
 
@@ -137,12 +158,19 @@ const suelo = new Suelo( {
 
 
 const teclas = {
-    w: {
+    arriba: {
         pressed : false
     },
-    space: {
+    left: {
+        pressed: false
+    },
+    right: {
+        pressed: false
+    },
+    abajo: {
         pressed: false
     }
+
 }
 
 const booleanos = {
@@ -150,51 +178,60 @@ const booleanos = {
         permitido: true
     }
 }
-
+const propiedades = {
+    jugador: {
+        velocidad__actual_y : 5
+    },
+    objectos: {
+        velocidad_inicio :2,
+        velocidad_actual: 2,
+        velocidad_maxima:9
+    }
+    
+}
 
 jugador.draw()
 suelo.draw()
 obstaculos[0].draw()
 /////////////////
 animate()
-
-var distanciadif = 50
-
-function animate(){
-    window.requestAnimationFrame(animate)
-    
-    c.clearRect(0,0,canvas.width,canvas.height)
-    jugador.update();
-    suelo.update();
-    obstaculos.forEach((obstaculo) => {
-        obstaculo.update();
-    });
-    moreObstaculos()
-    console.log("Aullando como lobaa aaaaaauuuuuuuuuuuu uuuuuuuuuu soy quien no se enamoraaaaaaaaaaaaaaa aaaaaaaaaaaauuuuuuuuu uuuuuuuuuuu uuuuuuuuuuuuuuuuuu");
-    jugador.velocidad.y = 3
-    //console.log(jugador.velocidad.y)
-    //console.log(booleanos.salto.permitido)
-    if (teclas.w.pressed && booleanos.salto.permitido) {
-        jugador.velocidad.y *= -5
-    }
-    
-}
-
 //////////
 
 window.addEventListener('keydown', (event) =>{
     switch (event.key) {
         case 'w':
-            teclas.w.pressed=true
+            teclas.arriba.pressed=true
 
             break;
+        case 'a':
+            teclas.left.pressed=true
+
+            break;
+        case 'd':
+            teclas.right.pressed=true
+    
+            break;
+        case 's':
+            teclas.abajo.pressed=true
+                break;
     }
 
 })
 window.addEventListener('keyup', (event) =>{
     switch (event.key) {
         case 'w':
-            teclas.w.pressed=false
+            teclas.arriba.pressed=false
+            break;
+        case 'a':
+            teclas.left.pressed=false
+    
+                break;
+        case 'd':
+            teclas.right.pressed=false
+        
+                break;
+        case 's':
+            teclas.abajo.pressed=false
             break;
     }
 
@@ -203,30 +240,71 @@ window.addEventListener('keyup', (event) =>{
 
 
 async function moreObstaculos(){
+      
+        if (obstaculos.length <=4 && fechanow < Date.now()) {
+            fechanow = Date.now()+750
+            let numRandom = Math.random();
+           if (numRandom > 0.5) {
+            
+             obstaculos.push(new Obstaculo({
+                position:   {
+                x: 400+Math.random()*750,
+                y: 250
+                },
+                velocidad: {
+                    x: 2,
+                    y: 0
+                },
+                tamano:   {
+                    x: 30,
+                    y: 50
+                }
+            }))
+           }
+           
+        }
     
-    if (obstaculos.length <=5) {
-        
-        let numRandom = Math.random();
-        console.log(numRandom)
-       if (numRandom > 0.99) {
-        
-         obstaculos.push(new Obstaculo({
-            position:   {
-            x: 400,
-            y: 250
-            },
-            velocidad: {
-                x: 2,
-                y: 0
-            },
-            tamano:   {
-                x: 30,
-                y: 70
-            }
-        }))
-       }
+   
+}
+//
 
+//
+var fechanow= Date.now();
+function animate(){
+    window.requestAnimationFrame(animate)
+    
+    c.clearRect(0,0,canvas.width,canvas.height)
+    jugador.update();
+    suelo.update();
+    obstaculos.forEach((obstaculo) => {
+        obstaculo.update();
+        obstaculo.velocidad.x = propiedades.objectos.velocidad_actual
+    });
+    moreObstaculos()
+    //console.log("Aullando como lobaa aaaaaauuuuuuuuuuuu uuuuuuuuuu soy quien no se enamoraaaaaaaaaaaaaaa aaaaaaaaaaaauuuuuuuuu uuuuuuuuuuu uuuuuuuuuuuuuuuuuu");
+    jugador.velocidad.x = 0
+    jugador.velocidad.y = propiedades.jugador.velocidad__actual_y
+    suelo.velocidad.x  = propiedades.objectos.velocidad_actual;
+    
+    if (propiedades.objectos.velocidad_actual < propiedades.objectos.velocidad_maxima) {
+        propiedades.objectos.velocidad_actual*= 1.001
+        console.log(propiedades.objectos.velocidad_actual)
     }
+    //console.log(jugador.velocidad.y)
+    //console.log(booleanos.salto.permitido)
+    if (teclas.arriba.pressed && booleanos.salto.permitido) {
+        jugador.velocidad.y *= -2
+    } else if (teclas.abajo.pressed) {
+        jugador.velocidad.y *= 4
+    }
+    if (teclas.left.pressed) {
+        jugador.velocidad.x +=-0.5
+    } else if (teclas.right.pressed){
+        jugador.velocidad.x +=0.5
+    }
+    
+    
+    
 }
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
