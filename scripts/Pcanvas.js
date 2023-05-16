@@ -5,7 +5,7 @@ canvas.width = 400
 canvas.height = 400
 
 
-
+//
 class Jugador {
     
     constructor({position, velocidad, tamano}){
