@@ -201,6 +201,7 @@ window.addEventListener('keydown', (event) =>{
     switch (event.key) {
         case 'w':
             teclas.arriba.pressed=true
+            
 
             break;
         case 'a':
@@ -244,7 +245,7 @@ async function moreObstaculos(){
         if (obstaculos.length <=4 && fechanow < Date.now()) {
             fechanow = Date.now()+750
             let numRandom = Math.random();
-           if (numRandom > 0.5) {
+           if (numRandom > 0.5 - (propiedades.objectos.velocidad_actual*0.025)) {
             
              obstaculos.push(new Obstaculo({
                 position:   {
